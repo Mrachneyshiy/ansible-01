@@ -1,7 +1,7 @@
 ---
   el:
     hosts:
-      centos7:
+      centos:
         ansible_connection: docker
   deb:
     hosts:

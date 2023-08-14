@@ -24,8 +24,51 @@ ansible 2.9.27
 ## Основная часть
 
 1. Попробуйте запустить playbook на окружении из `test.yml`, зафиксируйте значение, которое имеет факт `some_fact` для указанного хоста при выполнении playbook.
+#### Ответ:
+
+```bush
+[skvorchenkov@localhost playbook]$ ansible-playbook site.yml -i inventory/test.yml
+
+PLAY [Print os facts] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Platform linux on host localhost is using the discovered Python
+interpreter at /usr/bin/python, but future installation of another Python
+interpreter could change this. See https://docs.ansible.com/ansible/2.9/referen
+ce_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Print OS] ****************************************************************
+ok: [localhost] => {
+    "msg": "REDOS"
+}
+
+TASK [Print fact] **************************************************************
+ok: [localhost] => {
+    "msg": 12
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+```  
+
 2. Найдите файл с переменными (group_vars), в котором задаётся найденное в первом пункте значение, и поменяйте его на `all default fact`.
+
+```bush
+cat group_vars/all/examp.yml
+---
+  some_fact: "all default fact"
+``` 
+
 3. Воспользуйтесь подготовленным (используется `docker`) или создайте собственное окружение для проведения дальнейших испытаний.
+
+```bush
+[skvorchenkov@localhost ~]$ sudo docker ps
+CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS         PORTS     NAMES
+a2e01acd0dc4   5d0da3dc9764   "/bin/bash"   3 minutes ago   Up 3 minutes             centos
+62f4beaf089c   5a81c4b8502e   "/bin/bash"   4 minutes ago   Up 4 minutes             ubuntu
+```
+
 4. Проведите запуск playbook на окружении из `prod.yml`. Зафиксируйте полученные значения `some_fact` для каждого из `managed host`.
 5. Добавьте факты в `group_vars` каждой из групп хостов так, чтобы для `some_fact` получились значения: для `deb` — `deb default fact`, для `el` — `el default fact`.
 6.  Повторите запуск playbook на окружении `prod.yml`. Убедитесь, что выдаются корректные значения для всех хостов.
