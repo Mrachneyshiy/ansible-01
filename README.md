@@ -23,9 +23,7 @@ ansible 2.9.27
 
 ## Основная часть
 
-1. Попробуйте запустить playbook на окружении из `test.yml`, зафиксируйте значение, которое имеет факт `some_fact` для указанного хоста при выполнении playbook.
-#### Ответ:
-
+#### 1. Попробуйте запустить playbook на окружении из `test.yml`, зафиксируйте значение, которое имеет факт `some_fact` для указанного хоста при выполнении playbook.
 ```bush
 [skvorchenkov@localhost playbook]$ ansible-playbook site.yml -i inventory/test.yml
 
@@ -52,7 +50,7 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
 ```  
 
-2. Найдите файл с переменными (group_vars), в котором задаётся найденное в первом пункте значение, и поменяйте его на `all default fact`.
+#### 2. Найдите файл с переменными (group_vars), в котором задаётся найденное в первом пункте значение, и поменяйте его на `all default fact`.
 
 ```bush
 cat group_vars/all/examp.yml
@@ -60,7 +58,7 @@ cat group_vars/all/examp.yml
   some_fact: "all default fact"
 ``` 
 
-3. Воспользуйтесь подготовленным (используется `docker`) или создайте собственное окружение для проведения дальнейших испытаний.
+#### 3. Воспользуйтесь подготовленным (используется `docker`) или создайте собственное окружение для проведения дальнейших испытаний.
 
 ```bush
 [skvorchenkov@localhost playbook]$ sudo docker ps
@@ -69,7 +67,7 @@ CONTAINER ID   IMAGE     COMMAND       CREATED              STATUS              
 675520656dd7   ubuntu    "/bin/bash"   7 minutes ago        Up 6 minutes                  ubuntu
 ```
 
-4. Проведите запуск playbook на окружении из `prod.yml`. Зафиксируйте полученные значения `some_fact` для каждого из `managed host`.
+#### 4. Проведите запуск playbook на окружении из `prod.yml`. Зафиксируйте полученные значения `some_fact` для каждого из `managed host`.
 
 ```bush
 [skvorchenkov@localhost playbook]$ sudo ansible-playbook -i inventory/prod.yml site.yml
@@ -100,7 +98,8 @@ PLAY RECAP *********************************************************************
 centos                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
-5. Добавьте факты в `group_vars` каждой из групп хостов так, чтобы для `some_fact` получились значения: для `deb` — `deb default fact`, для `el` — `el default fact`.
+#### 5. Добавьте факты в `group_vars` каждой из групп хостов так, чтобы для `some_fact` получились значения: для `deb` — `deb default fact`, для `el` — `el default fact`.
+
 ```bush
 [skvorchenkov@localhost playbook]$ cat group_vars/{deb,el}/*
 
@@ -138,7 +137,8 @@ PLAY RECAP *********************************************************************
 centos                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
 ```
-7. При помощи `ansible-vault` зашифруйте факты в `group_vars/deb` и `group_vars/el` с паролем `netology`.
+#### 7. При помощи `ansible-vault` зашифруйте факты в `group_vars/deb` и `group_vars/el` с паролем `netology`.
+
 ```bush
 [skvorchenkov@localhost playbook]$ ansible-vault encrypt group_vars/deb/examp.yml
 New Vault password: 
@@ -164,7 +164,8 @@ $ANSIBLE_VAULT;1.1;AES256
 36323136306231333966383933393936626565353938633662666334323138633438323264353361
 3865383339396631616462363935626132316638396463316661
 ```
-8. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь в работоспособности.
+#### 8. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь в работоспособности.
+
 ```bush
 [skvorchenkov@localhost playbook]$ sudo ansible-playbook -i inventory/prod.yml site.yml --ask-vault-pass
 Vault password: 
@@ -195,8 +196,10 @@ PLAY RECAP *********************************************************************
 centos                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
 ```
-9. Посмотрите при помощи `ansible-doc` список плагинов для подключения. Выберите подходящий для работы на `control node`.
+#### 9. Посмотрите при помощи `ansible-doc` список плагинов для подключения. Выберите подходящий для работы на `control node`.
+
 Запустил комманду ansible-doc -t connection -l и выбрал из списка плагин local.
+
 ```bush
 [skvorchenkov@localhost playbook]$ ansible-doc -t connection local
 > LOCAL    (/usr/lib/python3.8/site-packages/ansible/plugins/connection/local.p>
@@ -216,7 +219,8 @@ AUTHOR: ansible (@core)
           - preview
           supported_by: community
 ```
-10. В `prod.yml` добавьте новую группу хостов с именем  `local`, в ней разместите localhost с необходимым типом подключения.
+#### 10. В `prod.yml` добавьте новую группу хостов с именем  `local`, в ней разместите localhost с необходимым типом подключения.
+
 ```bush
 [skvorchenkov@localhost playbook]$ cat inventory/prod.yml
   el:
@@ -232,7 +236,8 @@ AUTHOR: ansible (@core)
       localhost:
         ansible_connection: local
 ```
-11. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь, что факты `some_fact` для каждого из хостов определены из верных `group_vars`.
+#### 11. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь, что факты `some_fact` для каждого из хостов определены из верных `group_vars`.
+
 ```bush
 [skvorchenkov@localhost playbook]$ sudo ansible-playbook -i inventory/prod.yml site.yml --ask-vault-pass
 Vault password: 
@@ -274,21 +279,4 @@ centos                     : ok=3    changed=0    unreachable=0    failed=0    s
 localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
 ```
-12. Заполните `README.md` ответами на вопросы. Сделайте `git push` в ветку `master`. В ответе отправьте ссылку на ваш открытый репозиторий с изменённым `playbook` и заполненным `README.md`.
-
-## Необязательная часть
-
-1. При помощи `ansible-vault` расшифруйте все зашифрованные файлы с переменными.
-2. Зашифруйте отдельное значение `PaSSw0rd` для переменной `some_fact` паролем `netology`. Добавьте полученное значение в `group_vars/all/exmp.yml`.
-3. Запустите `playbook`, убедитесь, что для нужных хостов применился новый `fact`.
-4. Добавьте новую группу хостов `fedora`, самостоятельно придумайте для неё переменную. В качестве образа можно использовать [этот вариант](https://hub.docker.com/r/pycontribs/fedora).
-5. Напишите скрипт на bash: автоматизируйте поднятие необходимых контейнеров, запуск ansible-playbook и остановку контейнеров.
-6. Все изменения должны быть зафиксированы и отправлены в ваш личный репозиторий.
-
----
-
-### Как оформить решение задания
-
-Выполненное домашнее задание пришлите в виде ссылки на .md-файл в вашем репозитории.
-
----
+#### 12. Заполните `README.md` ответами на вопросы. Сделайте `git push` в ветку `master`. В ответе отправьте ссылку на ваш открытый репозиторий с изменённым `playbook` и заполненным `README.md`.
