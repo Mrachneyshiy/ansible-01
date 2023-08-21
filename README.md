@@ -106,7 +106,8 @@ ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    s
   some_fact: "deb default fact"
   some_fact: "el default fact"
 ```
-6.  Повторите запуск playbook на окружении `prod.yml`. Убедитесь, что выдаются корректные значения для всех хостов.
+#### 6.  Повторите запуск playbook на окружении `prod.yml`. Убедитесь, что выдаются корректные значения для всех хостов.
+
 ```bush
 [skvorchenkov@localhost playbook]$ sudo ansible-playbook -i inventory/prod.yml site.yml
 [sudo] пароль для skvorchenkov: 
